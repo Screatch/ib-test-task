@@ -1,0 +1,55 @@
+= @calculation.inspect
+
+.row
+  .col-sm-3
+    .card
+      .card-body
+        h2.card-title #{@calculation.base_currency} → #{@calculation.target_currency}
+
+        dl
+          dt Amount
+          dd = format_currency(@calculation.base_amount, @calculation.base_currency)
+
+          dt Max Waiting Time
+          dd = "#{(@calculation.created_at.to_date..@calculation.wait_until).count / 7} weeks"
+
+          dt Created At
+          dd = @calculation.created_at.strftime("%-d %B, %Y")
+
+          dt Max Profit
+          dd = format_currency(@rate_data.first[:profit], @calculation.target_currency)
+
+          dt Max Profit Week
+          dd = "#{@rate_data.first[:week]} week"
+  .col-sm-9
+
+    ul.nav.nav-tabs role="tablist"
+      li.nav-item
+        a.nav-link.active data-toggle="tab" href="#forecast" Forecast chart
+      li.nav-item
+        a.nav-link data-toggle="tab" href="#history" Historical chart
+
+    .tab-content
+      .tab-pane.active id="forecast" role="tabpanel"
+        #forecast-chart-container
+      .tab-pane id="history" role="tabpanel"
+        #historical-chart-container
+
+- @chart_data.each do |value|
+  input type="hidden" value="#{value[1][:weeks]}" id="#{value[0]}_weeks_array"
+  input type="hidden" value="#{value[1][:amount]}" id="#{value[0]}_target_amount_array"
+
+table.table.table-bordered
+  thead
+    tr
+      th Date
+      th Amount
+      th Profit
+  tbody
+    - @rate_data.each do |rate|
+      tr
+        td = "#{rate[:week]} week, #{rate[:year]}"
+        td = format_currency(rate[:target_amount], @calculation.target_currency)
+        td = format_currency(rate[:profit], @calculation.target_currency)
+
+= javascript_include_tag 'calculations_show'

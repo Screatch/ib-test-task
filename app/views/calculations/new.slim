@@ -1,0 +1,39 @@
+= form_for @calculation do |f|
+
+  = @calculation.errors.full_messages
+
+  .row
+    .col
+      .form-group
+        = f.label :base_currency
+        = f.select :base_currency, options_for_select(ExchangeRate::AVAILABLE_CURRENCIES), {}, class: 'form-control'
+
+    .col
+      .form-group
+        = f.label :target_currency
+        = f.select :target_currency, options_for_select(ExchangeRate::AVAILABLE_CURRENCIES), {}, class: 'form-control'
+
+  .row
+    .col
+      .form-group
+        = f.label :base_amount
+
+        .input-group
+          = f.text_field :base_amount, class: 'form-control'
+          span.input-group-addon USD
+    /.col
+    /  .form-group
+    /    = f.label :target_amount
+    /
+    /    .input-group
+    /      = f.text_field :target_amount, disabled: true, class: 'form-control'
+    /      span.input-group-addon USD
+
+  .row
+
+    .col
+      .form-group
+        = f.label :wait_until
+        = f.text_field :wait_until, class: 'form-control'
+
+    = f.submit 'Create Calculation', class: 'form-control'
