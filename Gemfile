@@ -60,6 +60,7 @@ gem 'tealeaves'
 gem 'activerecord-import'
 gem 'rest-client'
 gem 'holt_winters'
+gem 'devise'
 
 # UI
 gem 'jquery-rails'

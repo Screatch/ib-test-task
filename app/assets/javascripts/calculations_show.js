@@ -1,14 +1,9 @@
-Highcharts.dateFormats = {
-    W: function (timestamp) {
-        var date = new Date(timestamp),
-            day = date.getUTCDay() == 0 ? 7 : date.getUTCDay(),
-            dayNumber;
-        date.setDate(date.getUTCDate() + 4 - day);
-        dayNumber = Math.floor((date.getTime() - new Date(date.getUTCFullYear(), 0, 1, -6)) / 86400000);
-        return 1 + Math.floor(dayNumber / 7);
+String.prototype.capitalize = function () {
 
-    }
-}
+    return this.toLowerCase().replace(/\b[a-z]/g, function (letter) {
+        return letter.toUpperCase();
+    });
+};
 
 document.addEventListener("turbolinks:load", function() {
 
@@ -20,10 +15,10 @@ document.addEventListener("turbolinks:load", function() {
                 type: 'line'
             },
             title: {
-                text: 'Monthly Average Temperature'
+                text: key.capitalize()+' Currency Exchange Data'
             },
             subtitle: {
-                text: 'Source: WorldClimate.com'
+                text: 'Source: fixer.io'
             },
             xAxis: {
                 categories: JSON.parse($('#'+key+'_weeks_array').val())

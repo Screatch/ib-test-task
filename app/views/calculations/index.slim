@@ -6,5 +6,22 @@
 
     - if @calculations
 
+      table.table.table-bordered
+        thead
+          th Calculation Date
+          th Base Amount
+          th Target Currency
+          th
+          th
+
+        tbody
+          - @calculations.each do |calculation|
+            tr
+              td = calculation.created_at.strftime("%-d %B, %Y")
+              td = format_currency(calculation.base_amount, calculation.base_currency)
+              td = calculation.target_currency
+              td.fit = link_to 'Edit', edit_calculation_path(calculation), class: 'btn btn-primary'
+              td.fit = link_to 'Delete', calculation_path(calculation), method: :delete, class: 'btn btn-danger'
+
     - else
       h4.text-muted You have no calculations

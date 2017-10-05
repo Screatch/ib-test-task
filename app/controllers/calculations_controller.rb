@@ -1,7 +1,7 @@
 class CalculationsController < ApplicationController
 
   def index
-    @calculations = Calculation.all
+    @calculations = Calculation.order(created_at: :desc)
   end
 
   def new
@@ -16,12 +16,11 @@ class CalculationsController < ApplicationController
     historical_data_db = build_rates_query(@calculation, days_between_dates)
 
     # Push the last rate for the current week to array
-
     @rate_data = [
         {
-            week: historical_data_db.last[:week],
-            year: historical_data_db.last[:year],
-            exchange_rate: historical_data_db.last[:exchange_rate],
+            week: historical_data_db.last[:week].to_i,
+            year: historical_data_db.last[:year].to_i,
+            exchange_rate: historical_data_db.last[:exchange_rate].to_f,
             target_amount: historical_data_db.last[:exchange_rate].to_f * @calculation.base_amount,
             forecast: false,
             profit: 0
@@ -30,12 +29,8 @@ class CalculationsController < ApplicationController
 
     # Forecast
     forecast_date = Date.current + 7.days
-
-    # raise historical_data_db.collect{|rate| rate[:exchange_rate].to_f * @calculation.base_amount }.inspect
     forecast_data = HoltWinters.forecast(historical_data_db.collect{|rate| rate[:exchange_rate].to_f * @calculation.base_amount }, 0.5, 0, 0, 2, 2).reject{|item| item == 0}
-
     forecast_data.each do |forecast_rate|
-
       @rate_data << {
           week: forecast_date.strftime("%W").to_i,
           year: forecast_date.strftime("%Y").to_i,
@@ -48,12 +43,33 @@ class CalculationsController < ApplicationController
       forecast_date += 7.days
     end
 
+    # Rank calculation
+    @rate_data = rank_rate_data(@rate_data)
+
+
     # Processing fetched data and storing it as instance variable for charting purposes
     @chart_data = get_chart_data(@calculation, historical_data_db, @rate_data)
   end
 
-  def get_chart_data(calculation, historical_data, forecast_data)
+  def rank_rate_data(rate_data)
+    rank = 1
+    most_profitable = rate_data.dup.sort_by{|e| [e[:profit]]}.last(3)
+    rate_data.map! do |rate_data_item|
 
+      if most_profitable.collect{|item| item[:week]}.include?(rate_data_item[:week]) and
+          (most_profitable.collect{|item| item[:year]}.include?(rate_data_item[:year]))
+
+        rate_data_item.merge!({ rank: rank })
+        rank += 1
+      end
+
+      break if rank > 3
+      rate_data_item
+    end
+    rate_data
+  end
+
+  def get_chart_data(calculation, historical_data, forecast_data)
     chart_data = {}
 
     ['historical', 'forecast'].each do |key|
@@ -71,56 +87,6 @@ class CalculationsController < ApplicationController
     chart_data
   end
 
-
-
-
-  # def show
-  #   @calculation = Calculation.find(params[:id])
-  #
-  #   days_between_dates = (@calculation.created_at.to_date..@calculation.wait_until).count
-  #   rate_data_db = build_rates_query(@calculation, days_between_dates)
-  #
-  #   @rate_data = []
-  #
-  #   @target_amount_array = []
-  #   @weeks_array = []
-  #
-  #   # Historical data
-  #   rate_data_db.each do |rate_row|
-  #
-  #     # Charts
-  #     @weeks_array << "W#{rate_row['week']} #{rate_row['year']}"
-  #     @target_amount_array << rate_row['exchange_rate'].to_f * @calculation.base_amount
-  #
-  #     @rate_data << {
-  #         week: rate_row['week'],
-  #         year: rate_row['year'],
-  #         exchange_rate: rate_row['exchange_rate'],
-  #         target_amount: rate_row['exchange_rate'].to_f * @calculation.base_amount,
-  #         forecast: false
-  #     }
-  #   end
-  #
-  #   # Forecast
-  #   forecast_date = Date.current + 7.days
-  #   forecast_data = TeaLeaves.forecast(@rate_data.collect{|rate| rate[:target_amount]}, 9, days_between_dates)
-  #
-  #   chart_data = get_chart_data(@rate_data)
-  #
-  #   forecast_data.each do |forecast_rate|
-  #
-  #     @rate_data << {
-  #         week: forecast_date.strftime("%W").to_i,
-  #         year: forecast_date.strftime("%Y").to_i,
-  #         exchange_rate: forecast_rate,
-  #         target_amount: forecast_rate * @calculation.base_amount,
-  #         forecast: true
-  #     }
-  #
-  #     forecast_date += 7.days
-  #   end
-  # end
-
   def historical_data
 
   end
@@ -130,7 +96,7 @@ class CalculationsController < ApplicationController
   end
 
   def create
-    @calculation = Calculation.new(allowed_calculation_params)
+    @calculation = current_user.calculations.new(allowed_calculation_params)
     @calculation.wait_until = Date.current + params[:calculation][:wait_until].to_i.weeks
 
     if @calculation.save
