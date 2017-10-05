@@ -22,6 +22,8 @@
           - if top_profit_item[:profit] > 0
             dt Max Profit Week
             dd = "#{top_profit_item[:week]} week"
+
+          = link_to 'Edit', edit_calculation_path(@calculation)
   .col-sm-9
 
     ul.nav.nav-tabs role="tablist"

@@ -2,12 +2,18 @@
   .col
     h2 Calculations
 
+  .col-md-auto
+    = link_to 'New Calculation', new_calculation_path, class: 'btn btn-primary'
+
+.row
+  .col
     hr
 
-    - if @calculations
+    - if @calculations.any?
 
       table.table.table-bordered
         thead
+          th
           th Calculation Date
           th Base Amount
           th Target Currency
@@ -17,11 +23,12 @@
         tbody
           - @calculations.each do |calculation|
             tr
+              td.fit = link_to 'View', calculation, class: 'btn btn-secondary'
               td = calculation.created_at.strftime("%-d %B, %Y")
               td = format_currency(calculation.base_amount, calculation.base_currency)
               td = calculation.target_currency
-              td.fit = link_to 'Edit', edit_calculation_path(calculation), class: 'btn btn-primary'
-              td.fit = link_to 'Delete', calculation_path(calculation), method: :delete, class: 'btn btn-danger'
+              td.fit = link_to 'Edit', edit_calculation_path(calculation), class: 'btn btn-primary edit-btn'
+              td.fit = link_to 'Delete', calculation_path(calculation), method: :delete, class: 'btn btn-danger delete-btn'
 
     - else
       h4.text-muted You have no calculations

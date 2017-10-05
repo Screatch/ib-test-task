@@ -10,17 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171004235733) do
-
+ActiveRecord::Schema.define(version: 20_171_004_235_733) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "calculations", force: :cascade do |t|
+    t.bigint "user_id", null: false
     t.float "base_amount", null: false
     t.string "base_currency", limit: 3, null: false
     t.string "target_currency", limit: 3, null: false
     t.date "wait_until", null: false
     t.datetime "created_at"
+    t.index ["user_id"], name: "index_calculations_on_user_id"
   end
 
   create_table "exchange_rates", force: :cascade do |t|
@@ -44,5 +45,4 @@ ActiveRecord::Schema.define(version: 20171004235733) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
-
 end

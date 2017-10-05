@@ -17,3 +17,9 @@ html
         .alert.alert-danger = alert
 
       = yield
+
+      - if current_user
+
+        hr
+
+        = link_to 'Log out', destroy_user_session_path, method: :delete

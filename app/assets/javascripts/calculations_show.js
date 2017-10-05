@@ -25,7 +25,7 @@ document.addEventListener("turbolinks:load", function() {
             },
             yAxis: {
                 title: {
-                    text: 'Temperature (°C)'
+                    text: 'Target Amount'
                 }
             },
             plotOptions: {
@@ -33,7 +33,7 @@ document.addEventListener("turbolinks:load", function() {
                 }
             },
             series: [{
-                name: 'London',
+                name: 'Week',
                 data: JSON.parse($('#'+key+'_target_amount_array').val())
             }]
         });

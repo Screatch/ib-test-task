@@ -1,0 +1,43 @@
+= form_for @calculation do |f|
+
+  - if @calculation.errors.any?
+    .alert.alert-danger#errors
+      ul
+        - @calculation.errors.full_messages.each do |error_message|
+          li = error_message
+
+  .row
+
+
+    .col
+      .form-group
+        = f.label :base_amount
+        = f.text_field :base_amount, class: 'form-control'
+
+    .col
+      .form-group
+        = f.label :base_currency
+        = f.select :base_currency, options_for_select(ExchangeRate::AVAILABLE_CURRENCIES, @calculation.base_currency), {}, class: 'form-control'
+
+  .row
+
+
+    .col
+      .form-group
+        = f.label :target_currency
+        = f.select :target_currency, options_for_select(ExchangeRate::AVAILABLE_CURRENCIES, @calculation.target_currency), {}, class: 'form-control'
+
+    .col
+      .form-group
+        - if @calculation.id.present?
+
+          = f.label :wait_until
+          = f.text_field :wait_until, class: 'form-control', value: @calculation.wait_until.strftime("%d/%m/%Y")
+
+        - else
+          = f.label :weeks_to_wait, 'How many weeks to wait?'
+          = f.text_field :weeks_to_wait, class: 'form-control'
+
+  .row
+    .col
+      = f.submit class: 'form-control btn btn-dark'

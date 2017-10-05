@@ -16,3 +16,15 @@
 //= require popper
 //= require bootstrap
 //= require highstock
+//= require 'bootstrap-datepicker.min'
+
+document.addEventListener("turbolinks:load", function() {
+
+    $('#calculation_wait_until').datepicker({
+        format: "dd/mm/yyyy",
+        weekStart: 1,
+        startDate: "-250w",
+        endDate: "+250w"
+    });
+
+});
