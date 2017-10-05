@@ -72,6 +72,7 @@ gem "activerecord-import"
 gem "rest-client"
 gem "holt_winters"
 gem "devise"
+gem "sidekiq-cron", "~> 0.6.3"
 
 # UI
 gem "jquery-rails"
