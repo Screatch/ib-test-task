@@ -1,24 +1,19 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+App tested under Ruby 2.4.2
 
-Things you may want to cover:
+* `bundle install`
 
-* Ruby version
+* `rake db:create`
 
-* System dependencies
+* `rake db:migrate`
 
-* Configuration
+To populate database with exchange rates it makes sense to do initial import of exchange rates (located in public/historical_data.json) as it takes some time to 
+download all them from 
 
-* Database creation
+* `rake fixer:save`
 
-* Database initialization
+however there is also rake task to reimport everything from fixer API once again `rake fixer:resync`, due to rate limiting from Fixer side,
+there will be lot of retries however these tasks will eventually succeed.
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* `rails s`
