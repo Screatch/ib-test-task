@@ -7,12 +7,12 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   validates :username,
-            :presence => true,
-            :uniqueness => {
-                :case_sensitive => false
+            presence: true,
+            uniqueness: {
+                case_sensitive: false
             }
   validate :validate_username
-  validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, :multiline => true
+  validates_format_of :username, with: /^[a-zA-Z0-9_\.]*$/, multiline: true
 
   attr_accessor :login
   has_many :calculations
@@ -20,7 +20,7 @@ class User < ApplicationRecord
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
-      where(conditions.to_hash).where(["lower(username) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      where(conditions.to_hash).where(["lower(username) = :value OR lower(email) = :value", { value: login.downcase }]).first
     elsif conditions.has_key?(:username) || conditions.has_key?(:email)
       conditions[:email].downcase! if conditions[:email]
       where(conditions.to_hash).first
@@ -29,9 +29,9 @@ class User < ApplicationRecord
 
   private
 
-  def validate_username
-    if User.where(email: username).exists?
-      errors.add(:username, :invalid)
+    def validate_username
+      if User.where(email: username).exists?
+        errors.add(:username, :invalid)
+      end
     end
-  end
 end
