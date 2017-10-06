@@ -64,7 +64,6 @@ end
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem "sidekiq"
-gem "devise"
 gem "tealeaves"
 gem "activerecord-import"
 gem "rest-client"
