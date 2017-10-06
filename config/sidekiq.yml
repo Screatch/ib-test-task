@@ -1,0 +1,7 @@
+---
+development:
+  :concurrency: 20
+production:
+  :concurrency: 1
+:queues:
+  - default
