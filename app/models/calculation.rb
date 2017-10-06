@@ -11,7 +11,7 @@ class Calculation < ApplicationRecord
   validates :target_currency, inclusion: { in: ExchangeRate::AVAILABLE_CURRENCIES }, presence: true
   validate :base_and_target_currency_not_same
 
-  validates :weeks_to_wait, numericality: { less_than_or_equal_to: Calculation::MAX_WEEKS, only_integer: true, greater_than_or_equal_to: 1 }
+  validates :weeks_to_wait, numericality: { less_than_or_equal_to: Calculation::MAX_WEEKS, only_integer: true, greater_than_or_equal_to: 10 }
   validates :wait_until, inclusion: { in: (Date.today..Date.today + Calculation::MAX_WEEKS.weeks) }
 
   before_validation :set_wait_until

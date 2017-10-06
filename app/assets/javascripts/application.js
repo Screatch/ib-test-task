@@ -22,7 +22,7 @@ $(function() {
     $('#calculation_wait_until').datepicker({
         format: "dd/mm/yyyy",
         weekStart: 1,
-        startDate: "-250w",
+        startDate: "+10w",
         endDate: "+250w"
     });
 

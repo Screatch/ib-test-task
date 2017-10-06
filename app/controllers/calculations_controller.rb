@@ -64,7 +64,8 @@ class CalculationsController < ApplicationController
 
     # Forecast
     forecast_date = Date.current + 7.days
-    forecast_data = HoltWinters.forecast(historical_data_db.collect { |rate| rate[:exchange_rate].to_f * @calculation.base_amount }, 0.5, 0.25, 0, 10, 6).reject { |item| item == 0 }.reverse
+
+    forecast_data = HoltWinters.forecast(historical_data_db.collect { |rate| rate[:exchange_rate].to_f * @calculation.base_amount }, 0, 1, 0, 5, 4).reject { |item| item == 0 }
     forecast_data.each do |forecast_rate|
       @rate_data << {
         week: forecast_date.strftime("%W").to_i,

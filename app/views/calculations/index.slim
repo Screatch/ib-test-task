@@ -17,6 +17,7 @@
           th Calculation Date
           th Base Amount
           th Target Currency
+          th Wait Until
           th
           th
 
@@ -27,6 +28,7 @@
               td = calculation.created_at.strftime("%-d %B, %Y")
               td = format_currency(calculation.base_amount, calculation.base_currency)
               td = calculation.target_currency
+              td = calculation.wait_until.strftime("%-d %B, %Y")
               td.fit = link_to 'Edit', edit_calculation_path(calculation), class: 'btn btn-primary edit-btn'
               td.fit = link_to 'Delete', calculation_path(calculation), method: :delete, class: 'btn btn-danger delete-btn'
 

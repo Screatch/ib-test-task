@@ -49,6 +49,7 @@ table.table.table-bordered
   thead
     tr
       th Date
+      th Exchange Rate
       th Amount
       th Profit
       th Rank
@@ -56,6 +57,7 @@ table.table.table-bordered
     - @rate_data.each do |rate|
       tr
         td = "#{rate[:week]} week, #{rate[:year]}"
+        td = "1 #{@calculation.base_currency} = #{format_currency(rate[:exchange_rate], @calculation.target_currency)}"
         td = format_currency(rate[:target_amount], @calculation.target_currency)
         td = format_currency(rate[:profit], @calculation.target_currency)
         td = rate[:rank]

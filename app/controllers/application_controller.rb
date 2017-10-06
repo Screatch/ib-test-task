@@ -3,10 +3,13 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
-  def get_exchange_rate(rate_info)
-    base_rate = (ExchangeRate::BASE_CURRENCY == rate_info["base_currency"]) ? 1 : rate_info["base_rate"]
-    target_rate = (ExchangeRate::BASE_CURRENCY == rate_info["target_currency"]) ? 1 : rate_info["target_rate"]
+  before_action :configure_permitted_parameters, if: :devise_controller?
 
-    target_rate.to_f / base_rate.to_f
+  protected
+
+  def configure_permitted_parameters
+    added_attrs = [:username, :email, :password, :password_confirmation, :remember_me]
+    devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
+    devise_parameter_sanitizer.permit :account_update, keys: added_attrs
   end
 end
