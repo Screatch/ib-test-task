@@ -5,8 +5,7 @@ String.prototype.capitalize = function () {
     });
 };
 
-document.addEventListener("turbolinks:load", function() {
-
+$(function() {
     ['historical','forecast'].forEach(function(key){
         // Create the chart
         Highcharts.chart(key+'-chart-container', {

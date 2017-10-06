@@ -11,14 +11,13 @@
 // about supported directives.
 //
 //= require rails-ujs
-//= require turbolinks
 //= require jquery
 //= require popper
 //= require bootstrap
 //= require highstock
 //= require 'bootstrap-datepicker.min'
 
-document.addEventListener("turbolinks:load", function() {
+$(function() {
 
     $('#calculation_wait_until').datepicker({
         format: "dd/mm/yyyy",
