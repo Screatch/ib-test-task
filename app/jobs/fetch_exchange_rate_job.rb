@@ -4,7 +4,7 @@ class FetchExchangeRateJob < ApplicationJob
   queue_as :default
 
   def perform(date)
-    date = Date.parse(date)
+    date = (date) ? Date.parse(date) : Date.current
 
     # There are no currency rates on weekends so we can cut that
     return true if %w(Sat Sun).include?(date.strftime("%a"))
