@@ -8,6 +8,9 @@ FactoryGirl.define do
     sequence :email do |n|
       "squid#{n}@squid.com"
     end
+    sequence :username do |n|
+      "squid#{n}"
+    end
     password password
     password_confirmation password
   end
