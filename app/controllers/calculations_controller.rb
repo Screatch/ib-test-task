@@ -81,6 +81,7 @@ class CalculationsController < ApplicationController
 
     # Rank calculation
     @rate_data = rank_rate_data(@rate_data)
+    @top_profit_item = @rate_data.select { |rate_data_item| rate_data_item[:rank] == 1 }.first
 
     # Processing fetched data and storing it as instance variable for charting purposes
     @chart_data = get_chart_data(@calculation, historical_data_db, @rate_data)
@@ -127,17 +128,11 @@ class CalculationsController < ApplicationController
     end
 
     def build_rates_query(calculation, days_between_dates)
-      raw_result = ActiveRecord::Base.connection.execute("
-  SELECT
-  date_part('year', created_at::date)::numeric as year,
-  date_part('week', created_at::date)::numeric as week,
-  COALESCE(avg((rate_data->>'#{calculation.target_currency}')::numeric),1)/COALESCE(avg((rate_data->>'#{calculation.base_currency}')::numeric),1) AS exchange_rate
-  FROM exchange_rates
-  WHERE created_at >= '#{(Date.current - days_between_dates.days).to_formatted_s(:db)}' AND created_at <= '#{calculation.created_at.to_date.to_formatted_s(:db)}'
-  GROUP BY year, week
-  ")
-
-      # Symbolize keys to symbols and sort by week and year
-      raw_result.inject([]) { |res, val| res << val.symbolize_keys }.sort_by { |e| [e[:week], e[:year]] }
+      ExchangeRate.select("
+date_part('year', created_at::date)::numeric as year,
+date_part('week', created_at::date)::numeric as week,
+COALESCE(avg((rate_data->>'#{calculation.target_currency}')::numeric),1)/COALESCE(avg((rate_data->>'#{calculation.base_currency}')::numeric),1) AS exchange_rate")
+                       .where(created_at: (Date.current - days_between_dates.days)..calculation.created_at.to_date)
+                       .group(:year, :week).sort_by { |e| [e.week, e.year] }
     end
 end

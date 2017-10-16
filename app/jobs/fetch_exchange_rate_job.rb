@@ -12,7 +12,7 @@ class FetchExchangeRateJob < ApplicationJob
     formatted_date = date.strftime("%F")
     response = JSON.parse(RestClient.get("http://api.fixer.io/#{formatted_date}"))
 
-    # Means that we don't have yet data for that date (maybe bank didn't yet)
+    # Means that we don't have yet data for that date (maybe bank didn't yet provide it)
     return true if response["date"] != formatted_date
 
     # We save only these currencies that we are interested in

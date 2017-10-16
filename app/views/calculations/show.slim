@@ -14,14 +14,12 @@
           dt Created At
           dd = @calculation.created_at.strftime("%-d %B, %Y")
 
-          - top_profit_item = @rate_data.select{|rate_data_item| rate_data_item[:rank] == 1}.first
-
           dt Max Profit
-          dd = format_currency(top_profit_item[:profit], @calculation.target_currency)
+          dd = format_currency(@top_profit_item[:profit], @calculation.target_currency)
 
-          - if top_profit_item[:profit] > 0
+          - if @top_profit_item[:profit] > 0
             dt Max Profit Week
-            dd = "#{top_profit_item[:week]} week"
+            dd = "#{@top_profit_item[:week]} week"
 
           = link_to 'Edit', edit_calculation_path(@calculation)
   .col-sm-9
@@ -42,7 +40,7 @@
   input type="hidden" value="#{value[1][:weeks]}" id="#{value[0]}_weeks_array"
   input type="hidden" value="#{value[1][:amount]}" id="#{value[0]}_target_amount_array"
 
-- if top_profit_item[:profit] == 0
+- if @top_profit_item[:profit] == 0
   .alert.alert-warning According to our information, you will not be able to receive any profit from this trade in the waiting time that you supplied.
 
 table.table.table-bordered

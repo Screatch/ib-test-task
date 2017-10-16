@@ -17,6 +17,9 @@ class User < ApplicationRecord
   attr_accessor :login
   has_many :calculations
 
+  # Courtesy of official Devise guide
+  # https://github.com/plataformatec/devise/wiki/How-To:-Allow-users-to-sign-in-using-their-username-or-email-address
+
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
@@ -30,6 +33,13 @@ class User < ApplicationRecord
   private
 
     def validate_username
+      # This actually doesn't load all records as it may seem and produces the following SQL query
+      #   User Exists (47.2ms)  SELECT  1 AS one FROM "users" WHERE "users"."email" = $1 LIMIT $2  [["email", "username"], ["LIMIT", 1]]
+
+      # But for ease of mind this could be rewritten to
+      # User.exists?(email: username)
+      # But it essentially produces the same querys
+
       if User.where(email: username).exists?
         errors.add(:username, :invalid)
       end
